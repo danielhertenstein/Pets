@@ -93,11 +93,11 @@ public class CatalogActivity extends AppCompatActivity {
 
             while (cursor.moveToNext()) {
                 displayView.append(("\n"
-                        + cursor.getString(cursor.getColumnIndex(PetEntry._ID)) + " - "
+                        + cursor.getInt(cursor.getColumnIndex(PetEntry._ID)) + " - "
                         + cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME)) + " - "
                         + cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED)) + " - "
-                        + cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_GENDER)) + " - "
-                        + cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT))));
+                        + cursor.getInt(cursor.getColumnIndex(PetEntry.COLUMN_PET_GENDER)) + " - "
+                        + cursor.getInt(cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT))));
             }
         } finally {
             cursor.close();
