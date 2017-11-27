@@ -16,6 +16,7 @@
 package com.example.android.pets;
 
 import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -149,7 +150,11 @@ public class EditorActivity extends AppCompatActivity {
         contentValues.put(PetEntry.COLUMN_PET_GENDER, mGender);
         contentValues.put(PetEntry.COLUMN_PET_WEIGHT, weightInt);
 
-        getContentResolver().insert(PetEntry.CONTENT_URI, contentValues);
-        Toast.makeText(this, R.string.pet_saved, Toast.LENGTH_SHORT).show();
+        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, contentValues);
+        if (newUri == null) {
+            Toast.makeText(this, R.string.pet_saving_error, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.pet_saved, Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -18,6 +18,7 @@ package com.example.android.pets;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -124,6 +125,6 @@ public class CatalogActivity extends AppCompatActivity {
         contentValues.put(PetEntry.COLUMN_PET_BREED, "Terrier");
         contentValues.put(PetEntry.COLUMN_PET_GENDER, PetEntry.GENDER_MALE);
         contentValues.put(PetEntry.COLUMN_PET_WEIGHT, 7);
-        getContentResolver().insert(PetEntry.CONTENT_URI, contentValues);
+        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, contentValues);
     }
 }
