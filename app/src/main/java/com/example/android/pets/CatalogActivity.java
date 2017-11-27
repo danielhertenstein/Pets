@@ -65,10 +65,40 @@ public class CatalogActivity extends AppCompatActivity {
     private void displayDatabaseInfo() {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + PetEntry.TABLE_NAME, null);
+        String[] projection = {
+                PetEntry._ID,
+                PetEntry.COLUMN_PET_NAME,
+                PetEntry.COLUMN_PET_BREED,
+                PetEntry.COLUMN_PET_GENDER,
+                PetEntry.COLUMN_PET_WEIGHT
+        };
+        Cursor cursor = db.query(
+                PetEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+                );
+
+        TextView displayView = (TextView) findViewById(R.id.text_view_pet);
         try {
-            TextView displayView = (TextView) findViewById(R.id.text_view_pet);
-            displayView.setText("Number of rows in pets database table: " + cursor.getCount());
+            displayView.setText("The pets table contains " + cursor.getCount() + " pets.\n\n");
+            displayView.append(PetEntry._ID + " - "
+                    + PetEntry.COLUMN_PET_NAME + " - "
+                    + PetEntry.COLUMN_PET_BREED + " - "
+                    + PetEntry.COLUMN_PET_GENDER + " - "
+                    + PetEntry.COLUMN_PET_WEIGHT + "\n");
+
+            while (cursor.moveToNext()) {
+                displayView.append(("\n"
+                        + cursor.getString(cursor.getColumnIndex(PetEntry._ID)) + " - "
+                        + cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME)) + " - "
+                        + cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED)) + " - "
+                        + cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_GENDER)) + " - "
+                        + cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT))));
+            }
         } finally {
             cursor.close();
         }
