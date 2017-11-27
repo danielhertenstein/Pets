@@ -18,25 +18,20 @@ package com.example.android.pets;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.android.pets.data.PetContract.PetEntry;
-import com.example.android.pets.data.PetDbHelper;
 
 /**
  * Displays list of pets that were entered and stored in the app.
  */
 public class CatalogActivity extends AppCompatActivity {
-    private PetDbHelper mDbHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +47,6 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
 
-        mDbHelper = new PetDbHelper(this);
         displayDatabaseInfo();
     }
 
@@ -63,8 +57,6 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void displayDatabaseInfo() {
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         String[] projection = {
                 PetEntry._ID,
                 PetEntry.COLUMN_PET_NAME,
@@ -72,15 +64,12 @@ public class CatalogActivity extends AppCompatActivity {
                 PetEntry.COLUMN_PET_GENDER,
                 PetEntry.COLUMN_PET_WEIGHT
         };
-        Cursor cursor = db.query(
-                PetEntry.TABLE_NAME,
+        Cursor cursor = getContentResolver().query(
+                PetEntry.CONTENT_URI,
                 projection,
                 null,
                 null,
-                null,
-                null,
-                null
-                );
+                null);
 
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
         try {
@@ -130,13 +119,11 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void insertPet() {
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(PetEntry.COLUMN_PET_NAME, "Toto");
         contentValues.put(PetEntry.COLUMN_PET_BREED, "Terrier");
         contentValues.put(PetEntry.COLUMN_PET_GENDER, PetEntry.GENDER_MALE);
         contentValues.put(PetEntry.COLUMN_PET_WEIGHT, 7);
-        long newRowId = db.insert(PetEntry.TABLE_NAME, null, contentValues);
-        Log.v("CatalogActivity", "New row ID: " + newRowId);
+        getContentResolver().insert(PetEntry.CONTENT_URI, contentValues);
     }
 }
