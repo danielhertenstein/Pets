@@ -160,12 +160,23 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private void savePet() {
         String nameString = mNameEditText.getText().toString().trim();
         String breedString = mBreedEditText.getText().toString().trim();
-        int weightInt = Integer.parseInt(mWeightEditText.getText().toString().trim());
+        String weightString = mWeightEditText.getText().toString().trim();
+
+        if (mCurrentPetUri == null && TextUtils.isEmpty(nameString)
+                && TextUtils.isEmpty(breedString) && TextUtils.isEmpty(weightString)
+                && mGender == PetEntry.GENDER_UNKNOWN) {
+            // User didn't enter information for a new pet. Simply return without saving.
+            return;
+        }
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(PetEntry.COLUMN_PET_NAME, nameString);
         contentValues.put(PetEntry.COLUMN_PET_BREED, breedString);
         contentValues.put(PetEntry.COLUMN_PET_GENDER, mGender);
+        int weightInt = 0;
+        if (!TextUtils.isEmpty(weightString)) {
+            weightInt = Integer.parseInt(weightString);
+        }
         contentValues.put(PetEntry.COLUMN_PET_WEIGHT, weightInt);
 
         if (mCurrentPetUri == null) {
