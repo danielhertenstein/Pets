@@ -79,12 +79,12 @@ public class PetProvider extends ContentProvider {
         if (name == null) {
             throw new IllegalArgumentException("Pet requires a name");
         }
-        int weight = contentValues.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
-        if (weight < 0) {
-            throw new IllegalArgumentException("Pet cannot have a negative weight");
+        Integer weight = contentValues.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+        if (weight != null && weight < 0) {
+            throw new IllegalArgumentException("Pet requires a positive weight");
         }
-        int gender = contentValues.getAsInteger(PetEntry.COLUMN_PET_GENDER);
-        if ((gender != PetEntry.GENDER_MALE) && (gender != PetEntry.GENDER_FEMALE) && (gender != PetEntry.GENDER_UNKNOWN)) {
+        Integer gender = contentValues.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+        if (gender == null || gender != PetEntry.GENDER_MALE && gender != PetEntry.GENDER_FEMALE && gender != PetEntry.GENDER_UNKNOWN) {
             throw new IllegalArgumentException("Pet must have gender of Male, Female, or Unknown");
         }
 
@@ -104,7 +104,44 @@ public class PetProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection, @Nullable String[] selectionArgs) {
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PETS:
+                return updatePet(uri, contentValues, selection, selectionArgs);
+            case PETS_ID:
+                selection = PetEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updatePet(uri, contentValues, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
+    }
+
+    private int updatePet(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
+        if (contentValues.size() == 0) {
+            return 0;
+        }
+        if (contentValues.containsKey(PetEntry.COLUMN_PET_NAME)) {
+            String name = contentValues.getAsString(PetEntry.COLUMN_PET_NAME);
+            if (name == null) {
+                throw new IllegalArgumentException("Pet requires a name");
+            }
+        }
+        if (contentValues.containsKey(PetEntry.COLUMN_PET_WEIGHT)) {
+            Integer weight = contentValues.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+            if (weight != null && weight < 0) {
+                throw new IllegalArgumentException("Pet requires a positive weight");
+            }
+        }
+        if (contentValues.containsKey(PetEntry.COLUMN_PET_GENDER)) {
+            Integer gender = contentValues.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+            if (gender == null || gender != PetEntry.GENDER_MALE && gender != PetEntry.GENDER_FEMALE && gender != PetEntry.GENDER_UNKNOWN) {
+                throw new IllegalArgumentException("Pet must have gender of Male, Female, or Unknown");
+            }
+        }
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        return db.update(PetEntry.TABLE_NAME, contentValues, selection, selectionArgs);
     }
 }
