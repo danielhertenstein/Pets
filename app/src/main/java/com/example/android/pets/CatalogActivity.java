@@ -30,6 +30,8 @@ import android.widget.TextView;
 
 import com.example.android.pets.data.PetContract.PetEntry;
 
+import java.util.List;
+
 /**
  * Displays list of pets that were entered and stored in the app.
  */
@@ -49,7 +51,9 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
 
-        displayDatabaseInfo();
+        ListView listView = (ListView) findViewById(R.id.list_view_pet);
+        View emptyView = findViewById(R.id.empty_view);
+        listView.setEmptyView(emptyView);
     }
 
     @Override
