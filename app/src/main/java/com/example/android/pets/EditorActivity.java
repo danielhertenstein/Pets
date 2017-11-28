@@ -316,4 +316,16 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         showUnsavedChangesDialog(discardButtonClickListener);
     }
+
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deletePet();
+            }
+        });
+        builder.setNegativeButton()
+    }
 }
