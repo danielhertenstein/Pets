@@ -68,4 +68,7 @@
     <string name="keep_editing">Keep Editing</string>
     <string name="delete_dialog_msg">Delete this pet?</string>
     <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="editor_delete_pet_failed">Error with deleting pet</string>
+    <string name="editor_delete_pet_successful">Pet deleted</string>
 </resources>
